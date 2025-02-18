@@ -2,68 +2,86 @@
 
 Vector::Vector()
 {
-	n = 0;
-	array = nullptr;
+	this->n = 0;
+	this->array = nullptr;
+}
+
+Vector::Vector(unsigned int n, const int* array)
+{
+	this->n = n;
+	this->array = new int[n];
+	for (int i = 0; i < n; i++)
+	{
+		this->array[i] = array[i];
+	}
 }
 
 Vector::Vector(const Vector& other)
 {
-	n = other.n;
-	array = new int[n];
-	for (int i = 0; i < n; i++)
+	this->n = other.n;
+	this->array = new int[this->n];
+	for (int i = 0; i < this->n; i++)
 	{
-		array[i] = other.array[i];
+		this->array[i] = other.array[i];
 	}
 }
 
 Vector::Vector(Vector&& other) noexcept
 {
-	n = other.n;
-	array = other.array;
+	this->array = other.array;
+	this->n = other.n;
 	other.array = nullptr;
 	other.n = 0;
 }
 
-Vector::~Vector()
+Vector& Vector::operator=(const Vector& other)
 {
-	delete[] array;
-}
-
-double Vector::operator*(const Vector& other)
-{
-	double result = 0;
-	for (int i = 0; i < other.n; i++)
+	if (this == &other) return *this;
+	delete[] this->array;
+	this->n = other.n;
+	this->array = new int[this->n];
+	for (int i = 0; i < this->n; i++)
 	{
-		result += other.array[i] * array[i];
+		this->array[i] = other.array[i];
 	}
-	return result;
+	return *this;
 }
 
-int Vector::operator[](int index)
+Vector& Vector::operator=(Vector&& other) noexcept
+{
+	if (this == &other) return *this;
+	delete[] this->array;
+	this->array = other.array;
+	this->n = other.n;
+	other.array = nullptr;
+	other.n = 0;
+	return *this;
+}
+
+int& Vector::operator[](unsigned int index)
 {
 	return array[index];
 }
 
-std::ostream& operator<<(std::ostream& os, Vector& other)
+std::ostream& operator<<(std::ostream& os, const Vector& vec)
 {
 	os << "(";
-	for (int i = 0; i < other.n - 1; i++)
+	for (int i = 0; i < vec.n - 1; i++)
 	{
-		os << other.array[i] << ", ";
-	} 
-	os << other.array[other.n - 1] << ")";
+		os << vec.array[i] << ", ";
+	}
+	os << vec.array[vec.n - 1] << ")";
 	return os;
 }
 
-std::istream& operator>>(std::istream& is, Vector& other)
+std::istream& operator>>(std::istream& is, Vector& vec)
 {
-	unsigned int n;
-	is >> n;
-	other.n = n;
-	other.array = new int[n];
-	for (int i = 0; i < n; i++)
+	is >> vec.n;
+	delete[] vec.array;
+	vec.array = new int[vec.n];
+	for (int i = 0; i < vec.n; i++)
 	{
-		is >> other.array[i];
+		is >> vec.array[i];
 	}
 	return is;
 }

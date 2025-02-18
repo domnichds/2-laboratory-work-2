@@ -6,16 +6,17 @@
 class Vector
 {
 private:
-	int* array;
 	unsigned int n;
+	int* array;
 public:
 	Vector();
+	Vector(unsigned int, const int*);
 	Vector(const Vector&);
-	Vector(Vector&&);
-	~Vector();
-	double operator*(const Vector&);
-	int operator[](int);
-	friend std::ostream& operator<<(std::ostream&, Vector&);
+	Vector(Vector&&) noexcept;
+	Vector& operator=(const Vector&);
+	Vector& operator=(Vector&&) noexcept;
+	int& operator[](unsigned int);
+	friend std::ostream& operator<<(std::ostream&, const Vector&);
 	friend std::istream& operator>>(std::istream&, Vector&);
 };
 #endif
